@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier le Profil - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour modifier votre profil.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            chargerProfil(pseudo);
+        });
+
+        function chargerProfil(pseudo) {
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const utilisateur = membres.find(m => m.pseudo === pseudo);
+
+            if (!utilisateur) {
+                alert("Erreur : Impossible de charger votre profil.");
+                return;
+            }
+
+            document.getElementById("prenom").value = utilisateur.prenom || "";
+            document.getElementById("nom").value = utilisateur.nom || "";
+            document.getElementById("lieu-naissance").value = utilisateur.lieuNaissance || "";
+            document.getElementById("age").value = utilisateur.age || "";
+            document.getElementById("sang").value = utilisateur.sang || "";
+            document.getElementById("baguette").value = utilisateur.baguette || "";
+            document.getElementById("patronus").value = utilisateur.patronus || "";
+            document.getElementById("amortentia").value = utilisateur.amortentia || "";
+            document.getElementById("miroir-rised").value = utilisateur.miroirRised || "";
+            document.getElementById("creature").value = utilisateur.creatureCompagnie || "";
+            document.getElementById("epouvantard").value = utilisateur.epouvantard || "";
+            document.getElementById("description-physique").value = utilisateur.descriptionPhysique || "";
+            document.getElementById("description-mentale").value = utilisateur.descriptionMentale || "";
+            document.getElementById("histoire").value = utilisateur.histoire || "";
+        }
+
+        function sauvegarderProfil() {
+            const pseudo = localStorage.getItem("pseudo");
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const utilisateurIndex = membres.findIndex(m => m.pseudo === pseudo);
+
+            if (utilisateurIndex === -1) {
+                alert("Erreur : Impossible de sauvegarder votre profil.");
+                return;
+            }
+
+            membres[utilisateurIndex] = {
+                ...membres[utilisateurIndex],
+                prenom: document.getElementById("prenom").value,
+                nom: document.getElementById("nom").value,
+                lieuNaissance: document.getElementById("lieu-naissance").value,
+                age: document.getElementById("age").value,
+                sang: document.getElementById("sang").value,
+                baguette: document.getElementById("baguette").value,
+                patronus: document.getElementById("patronus").value,
+                amortentia: document.getElementById("amortentia").value,
+                miroirRised: document.getElementById("miroir-rised").value,
+                creatureCompagnie: document.getElementById("creature").value,
+                epouvantard: document.getElementById("epouvantard").value,
+                descriptionPhysique: document.getElementById("description-physique").value,
+                descriptionMentale: document.getElementById("description-mentale").value,
+                histoire: document.getElementById("histoire").value
+            };
+
+            localStorage.setItem("membres", JSON.stringify(membres));
+
+            alert("Profil mis à jour avec succès !");
+            window.location.href = "mon_profil.html"; // Redirection vers la page Mon Profil
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>🔧 Modifier mon Profil</h1>
+            <form onsubmit="sauvegarderProfil(); return false;">
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" required>
+
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" required>
+
+                <label for="lieu-naissance">Lieu de Naissance :</label>
+                <input type="text" id="lieu-naissance">
+
+                <label for="age">Âge :</label>
+                <input type="number" id="age" min="11" max="100">
+
+                <label for="sang">Sang :</label>
+                <select id="sang">
+                    <option value="Sang-Pur">Sang-Pur</option>
+                    <option value="Mêlé">Mêlé</option>
+                    <option value="Né-Moldu">Né-Moldu</option>
+                </select>
+
+                <label for="baguette">Baguette Magique :</label>
+                <input type="text" id="baguette">
+
+                <label for="patronus">Patronus :</label>
+                <input type="text" id="patronus">
+
+                <label for="amortentia">Amortentia (odeurs préférées) :</label>
+                <input type="text" id="amortentia">
+
+                <label for="miroir-rised">Miroir de Rised (plus grand désir) :</label>
+                <input type="text" id="miroir-rised">
+
+                <label for="creature">Créature de Compagnie :</label>
+                <input type="text" id="creature">
+
+                <label for="epouvantard">Épouvantard :</label>
+                <input type="text" id="epouvantard">
+
+                <label for="description-physique">Description Physique :</label>
+                <textarea id="description-physique"></textarea>
+
+                <label for="description-mentale">Description Mentale :</label>
+                <textarea id="description-mentale"></textarea>
+
+                <label for="histoire">Histoire :</label>
+                <textarea id="histoire"></textarea>
+
+                <button type="submit" class="btn">💾 Sauvegarder</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

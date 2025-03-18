@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serveur Discord - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Vérifier si l'utilisateur est bien connecté
+            const pseudo = localStorage.getItem("pseudo");
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder au serveur Discord.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            // Affichage du pseudo dans la page
+            document.getElementById("pseudo-display").innerText = pseudo;
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="bulletin-de-note.html">📜 Bulletin de Notes</a></li>
+                <li><a href="discord.html" class="active">💬 Serveur Discord</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>💬 Serveur Discord</h1>
+            <p class="description">
+                Rejoignez notre serveur Discord officiel de BeauxBâtons RPG ! 
+                C'est l'endroit idéal pour discuter avec d'autres joueurs, participer à des événements, 
+                poser des questions et être informé des dernières nouveautés du RPG.
+            </p>
+
+            <p class="highlight">
+                Connecté en tant que : <strong id="pseudo-display"></strong>
+            </p>
+
+            <a href="https://discord.gg/votre-invitation" target="_blank" class="btn btn-discord">
+                🎧 Rejoindre le Serveur
+            </a>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

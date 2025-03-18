@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("pseudo")) {
+                alert("Vous êtes déjà connecté !");
+                window.location.href = "indexinscrit.html";
+                return;
+            }
+        });
+
+        function validerInscription(event) {
+            event.preventDefault();
+
+            let pseudo = document.getElementById("pseudo").value.trim();
+            let motDePasse = document.getElementById("motDePasse").value;
+            let confirmation = document.getElementById("confirmation").value;
+            let age = document.getElementById("age").value;
+            let ordre = document.getElementById("ordre").value;
+            let annee = document.getElementById("annee").value;
+            let baguette = document.getElementById("baguette").value.trim();
+            let patronus = document.getElementById("patronus").value.trim();
+            let description = document.getElementById("description").value.trim();
+            let role = "eleve"; 
+
+            if (!pseudo || !motDePasse || !confirmation || !age || !ordre || !annee) {
+                alert("Veuillez remplir tous les champs obligatoires.");
+                return;
+            }
+
+            if (motDePasse !== confirmation) {
+                alert("Les mots de passe ne correspondent pas !");
+                return;
+            }
+
+            let membres = JSON.parse(localStorage.getItem("membres")) || [];
+            if (membres.some(membre => membre.pseudo.toLowerCase() === pseudo.toLowerCase())) {
+                alert("Ce pseudo est déjà pris. Choisissez-en un autre.");
+                return;
+            }
+
+            let nouveauMembre = {
+                pseudo,
+                motDePasse,
+                age,
+                ordre,
+                annee,
+                baguette,
+                patronus,
+                description,
+                role
+            };
+
+            membres.push(nouveauMembre);
+            localStorage.setItem("membres", JSON.stringify(membres));
+
+            alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+            window.location.href = "connexion.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="index.html">🏠 Accueil</a></li>
+                <li><a href="connexion.html">🔑 Connexion</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>📝 Inscription à BeauxBâtons RPG</h1>
+            <p>Rejoignez l'école prestigieuse de BeauxBâtons et vivez une aventure magique en tant qu'élève !</p>
+            <p>Remplissez ce formulaire avec attention. Une fois inscrit, vous pourrez personnaliser votre profil et participer aux événements du RPG.</p>
+
+            <form onsubmit="validerInscription(event)">
+                <h2>🔹 Informations Générales</h2>
+
+                <label for="pseudo">📛 Pseudo :</label>
+                <input type="text" id="pseudo" required placeholder="Ex: Alice.Oswald">
+
+                <label for="motDePasse">🔒 Mot de passe :</label>
+                <input type="password" id="motDePasse" required placeholder="Votre mot de passe">
+
+                <label for="confirmation">✅ Confirmez le mot de passe :</label>
+                <input type="password" id="confirmation" required placeholder="Répétez votre mot de passe">
+
+                <label for="age">🎂 Âge :</label>
+                <input type="number" id="age" required placeholder="Votre âge">
+
+                <label for="ordre">Choisissez votre ordre :</label>
+                <select id="ordre" required>
+                    <option value="">-- Sélectionnez un ordre --</option>
+                    <option value="Aloysia">Aloysia (Orange)</option>
+                    <option value="Lonycera">Lonycera (Violet)</option>
+                    <option value="Urtica">Urtica (Vert)</option>
+                </select>
+
+                <label for="annee">📅 Année d'étude :</label>
+                <select id="annee" required>
+                    <option value="">-- Sélectionnez votre année --</option>
+                    <option value="1ère année">1ère année</option>
+                    <option value="2ème année">2ème année</option>
+                    <option value="3ème année">3ème année</option>
+                    <option value="4ème année">4ème année</option>
+                    <option value="5ème année">5ème année</option>
+                    <option value="6ème année">6ème année</option>
+                    <option value="7ème année">7ème année</option>
+                    <option value="8ème année">8ème année</option>
+                </select>
+
+                <button type="submit" class="btn">S'inscrire</button>
+            </form>
+
+            <p>Déjà inscrit ? <a href="connexion.html">Connectez-vous ici</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

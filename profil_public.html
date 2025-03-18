@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Public - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pseudo = urlParams.get("pseudo");
+
+            if (!pseudo) {
+                alert("Aucun profil sélectionné !");
+                window.location.href = "annuaire.html";
+                return;
+            }
+
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const membre = membres.find(m => m.pseudo === pseudo);
+
+            if (!membre) {
+                alert("Ce profil n'existe pas !");
+                window.location.href = "annuaire.html";
+                return;
+            }
+
+            document.getElementById("pseudo-display").innerText = membre.pseudo;
+            document.getElementById("avatar-img").src = membre.avatar || "images/default-avatar.png";
+            document.getElementById("role").innerText = membre.role === "eleve" ? "Élève" : "Professeur";
+
+            if (membre.role === "eleve") {
+                document.getElementById("eleve-info").style.display = "block";
+                document.getElementById("ordre-display").innerText = membre.ordre || "Non assigné";
+                document.getElementById("annee-display").innerText = membre.annee || "Non assigné";
+            } else {
+                document.getElementById("professeur-info").style.display = "block";
+                document.getElementById("matieres-display").innerText = membre.matieres.length > 0 ? membre.matieres.join(", ") : "Non spécifié";
+            }
+
+            // Récupération des informations personnalisées
+            const personnalisation = membre.personnalisation || {};
+            ["prenom", "nom", "lieu", "age", "sang", "amortentia", "miroir", "description-physique", "description-mentale", "histoire"].forEach(id => {
+                document.getElementById(id).innerText = personnalisation[id] || "Non renseigné";
+            });
+
+            // Affichage des images pour les objets magiques
+            ["baguette-img", "patronus-img", "creature-img", "epouvantard-img"].forEach(id => {
+                const imgSrc = personnalisation[id] || "images/default-placeholder.png";
+                document.getElementById(id).src = imgSrc;
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="contextRP.html">📖 Contexte RP</a></li>
+                <li><a href="comment-rp.html">🎭 Comment RP ?</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+            </ul>
+        </aside>
+
+        <div class="profile-box">
+            <h1>👤 Profil Public</h1>
+            <img id="avatar-img" class="profile-avatar" src="images/default-avatar.png" alt="Avatar du joueur">
+
+            <p><strong>Pseudo :</strong> <span id="pseudo-display"></span></p>
+            <p><strong>Rôle :</strong> <span id="role"></span></p>
+
+            <!-- Informations spécifiques aux élèves -->
+            <div id="eleve-info" style="display:none;">
+                <p><strong>Ordre :</strong> <span id="ordre-display"></span></p>
+                <p><strong>Année :</strong> <span id="annee-display"></span></p>
+            </div>
+
+            <!-- Informations spécifiques aux professeurs -->
+            <div id="professeur-info" style="display:none;">
+                <p><strong>Matières enseignées :</strong> <span id="matieres-display"></span></p>
+            </div>
+
+            <h2>Informations Personnelles</h2>
+            <p><strong>Prénom :</strong> <span id="prenom"></span></p>
+            <p><strong>Nom :</strong> <span id="nom"></span></p>
+            <p><strong>Lieu de naissance :</strong> <span id="lieu"></span></p>
+            <p><strong>Âge :</strong> <span id="age"></span></p>
+            <p><strong>Sang :</strong> <span id="sang"></span></p>
+
+            <h2>Attributs Magiques</h2>
+            <p><strong>Baguette :</strong></p>
+            <img id="baguette-img" class="profile-image" src="images/default-placeholder.png" alt="Baguette">
+            
+            <p><strong>Patronus :</strong></p>
+            <img id="patronus-img" class="profile-image" src="images/default-placeholder.png" alt="Patronus">
+            
+            <p><strong>Créature de compagnie :</strong></p>
+            <img id="creature-img" class="profile-image" src="images/default-placeholder.png" alt="Créature de compagnie">
+            
+            <p><strong>Épouvantard :</strong></p>
+            <img id="epouvantard-img" class="profile-image" src="images/default-placeholder.png" alt="Épouvantard">
+
+            <h2>Autres Informations</h2>
+            <p><strong>Amortentia :</strong> <span id="amortentia"></span></p>
+            <p><strong>Miroir de Risèd :</strong> <span id="miroir"></span></p>
+
+            <h2>Histoire & Description</h2>
+            <p><strong>Description Physique :</strong></p>
+            <p id="description-physique" class="profile-text"></p>
+
+            <p><strong>Description Mentale :</strong></p>
+            <p id="description-mentale" class="profile-text"></p>
+
+            <p><strong>Histoire :</strong></p>
+            <p id="histoire" class="profile-text"></p>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

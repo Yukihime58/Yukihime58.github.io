@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Banque Magique - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- 🏰 Barre latérale -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Logo BeauxBâtons">
+        </div>
+        <ul>
+            <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+            <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+            <li><a href="Bulletin-de-Note.html">📜 Bulletin de Note</a></li>
+            <li><a href="Consultation_Bulletin.html">🔍 Consultation Bulletins</a></li>
+            <li><a href="banque.html">💰 Banque</a></li>
+            <li><a href="points_ordres.html">🏆 Points des Ordres</a></li>
+            <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+        </ul>
+    </aside>
+
+    <!-- 💰 Contenu Principal -->
+    <div class="container">
+        <div class="form-box">
+            <h1>💰 Banque Magique</h1>
+            <p>Gérez vos Bézants et consultez l'historique des transactions.</p>
+
+            <div class="balance-box">
+                <h2>Votre solde actuel :</h2>
+                <p><strong><span id="solde-display">0</span> Bézants</strong></p>
+            </div>
+        </div>
+
+        <!-- Section réservée aux Professeurs -->
+        <div id="admin-section" class="form-box">
+            <h2>⚙️ Gestion des Comptes</h2>
+            <p>Les professeurs peuvent attribuer ou retirer des Bézants.</p>
+
+            <label for="membre-select">Sélectionner un membre :</label>
+            <select id="membre-select"></select>
+
+            <label for="montant">Montant (+/-) :</label>
+            <input type="number" id="montant" required>
+
+            <button onclick="effectuerTransaction()" class="btn">Effectuer la Transaction</button>
+            <button onclick="effacerHistorique()" class="btn btn-danger">Effacer l'Historique</button>
+        </div>
+
+        <!-- 📜 Historique des transactions -->
+        <div class="form-box">
+            <h2>📜 Historique des Transactions</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Professeur</th>
+                            <th>Compte</th>
+                            <th>Montant</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historique-transactions"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔄 Script de gestion de la banque -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+            let banque = JSON.parse(localStorage.getItem("banque")) || {};
+            let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            let membres = JSON.parse(localStorage.getItem("membres")) || [];
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à la banque.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("solde-display").innerText = banque[pseudo] ? banque[pseudo] + " Bézants" : "0 Bézants";
+
+            if (role === "professeur") {
+                document.getElementById("admin-section").style.display = "block";
+                chargerListeMembres();
+            } else {
+                document.getElementById("admin-section").style.display = "none";
+            }
+
+            afficherHistorique();
+        });
+
+        function chargerListeMembres() {
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const membreSelect = document.getElementById("membre-select");
+
+            let options = membres.map(membre => `<option value="${membre.pseudo}">${membre.pseudo}</option>`).join("");
+            membreSelect.innerHTML = options || '<option>Aucun membre trouvé</option>';
+        }
+
+        function effectuerTransaction() {
+            const pseudo = localStorage.getItem("pseudo");
+            const compteCible = document.getElementById("membre-select").value;
+            let montant = parseInt(document.getElementById("montant").value);
+
+            if (!compteCible || isNaN(montant)) {
+                alert("Veuillez sélectionner un membre et entrer un montant valide.");
+                return;
+            }
+
+            let banque = JSON.parse(localStorage.getItem("banque")) || {};
+            banque[compteCible] = (banque[compteCible] || 0) + montant;
+            localStorage.setItem("banque", JSON.stringify(banque));
+
+            let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            transactions.push({
+                professeur: pseudo,
+                compte: compteCible,
+                montant: montant,
+                date: new Date().toLocaleString()
+            });
+
+            localStorage.setItem("transactions", JSON.stringify(transactions));
+            alert("Transaction effectuée !");
+            location.reload();
+        }
+
+        function afficherHistorique() {
+            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            const historiqueTransactions = document.getElementById("historique-transactions");
+
+            historiqueTransactions.innerHTML = transactions.length > 0
+                ? transactions.map(t => `<tr><td>${t.professeur}</td><td>${t.compte}</td><td>${t.montant} Bézants</td><td>${t.date}</td></tr>`).join("")
+                : "<tr><td colspan='4'>Aucune transaction enregistrée.</td></tr>";
+        }
+
+        function effacerHistorique() {
+            if (confirm("Êtes-vous sûr de vouloir effacer tout l'historique des transactions ?")) {
+                localStorage.removeItem("transactions");
+                alert("Historique effacé !");
+                location.reload();
+            }
+        }
+    </script>
+
+</body>
+</html>

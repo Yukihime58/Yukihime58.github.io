@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+            const annonces = JSON.parse(localStorage.getItem("annonces")) || [];
+            const eventEnCours = localStorage.getItem("event") || "Aucun événement pour le moment.";
+            
+            if (!pseudo) {
+                alert("Vous devez être connecté.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("pseudo-display").innerText = pseudo;
+            document.getElementById("role-display").innerText = role === "professeur" ? "Professeur" : "Élève";
+
+            // Affichage des annonces
+            const annonceSection = document.getElementById("annonces");
+            if (annonces.length > 0) {
+                annonces.forEach(annonce => {
+                    let p = document.createElement("p");
+                    p.innerHTML = `📢 <strong>${annonce.date} :</strong> ${annonce.message}`;
+                    annonceSection.appendChild(p);
+                });
+            } else {
+                annonceSection.innerHTML = "<p>Aucune annonce pour le moment.</p>";
+            }
+
+            // Affichage de l'événement en cours
+            document.getElementById("event-display").innerText = eventEnCours;
+
+            // Chargement des statistiques
+            chargerStatistiques();
+        });
+
+        function chargerStatistiques() {
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            const pointsOrdres = JSON.parse(localStorage.getItem("pointsOrdres")) || { Aloysia: 0, Lonycera: 0, Urtica: 0 };
+
+            document.getElementById("total-membres").innerText = membres.length;
+            document.getElementById("transactions-total").innerText = transactions.length;
+            
+            let ordreEnTete = Object.keys(pointsOrdres).reduce((a, b) => pointsOrdres[a] > pointsOrdres[b] ? a : b);
+            document.getElementById("ordre-tete").innerText = ordreEnTete;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="Bulletin-de-Note.html">📜 Bulletin de Notes</a></li>
+                <li><a href="Consultation_Bulletin.html">🔍 Consultation Bulletins</a></li>
+                <li><a href="points_ordres.html">🏆 Points des Ordres</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="comment-rp.html">📖 Guide du RP</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>🏰 Bienvenue à BeauxBâtons, <span id="pseudo-display"></span> !</h1>
+            <p><strong>Votre rôle :</strong> <span id="role-display"></span></p>
+
+            <h2>🎉 Événement en cours</h2>
+            <p id="event-display">Chargement...</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+            const annonces = JSON.parse(localStorage.getItem("annonces")) || [];
+            const eventEnCours = localStorage.getItem("event") || "Aucun événement pour le moment.";
+
+            if (!pseudo) {
+                alert("Vous devez être connecté.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("pseudo-display").innerText = pseudo;
+            document.getElementById("role-display").innerText = role === "professeur" ? "Professeur" : "Élève";
+
+            // Affichage des annonces
+            const annonceSection = document.getElementById("annonces");
+            if (annonces.length > 0) {
+                annonces.forEach(annonce => {
+                    let p = document.createElement("p");
+                    p.innerHTML = `📢 <strong>${annonce.date} :</strong> ${annonce.message}`;
+                    annonceSection.appendChild(p);
+                });
+            } else {
+                annonceSection.innerHTML = "<p>Aucune annonce pour le moment.</p>";
+            }
+
+            // Affichage de l'événement en cours
+            document.getElementById("event-display").innerText = eventEnCours;
+
+            // Chargement des statistiques
+            chargerStatistiques();
+
+            // Chargement du calendrier
+            chargerCalendrier();
+
+            // Si Professeur, affichage du module d'ajout de cours
+            if (role === "professeur") {
+                document.getElementById("admin-actions").style.display = "block";
+            }
+        });
+
+        function chargerStatistiques() {
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            const pointsOrdres = JSON.parse(localStorage.getItem("pointsOrdres")) || { Aloysia: 0, Lonycera: 0, Urtica: 0 };
+
+            document.getElementById("total-membres").innerText = membres.length;
+            document.getElementById("transactions-total").innerText = transactions.length;
+
+            let ordreEnTete = Object.keys(pointsOrdres).reduce((a, b) => pointsOrdres[a] > pointsOrdres[b] ? a : b);
+            document.getElementById("ordre-tete").innerText = ordreEnTete;
+        }
+
+        function chargerCalendrier() {
+            let calendarEl = document.getElementById("calendar");
+            let events = JSON.parse(localStorage.getItem("coursEvenements")) || [];
+
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: "dayGridMonth",
+                locale: "fr",
+                editable: false,
+                selectable: true,
+                events: events,
+                eventClick: function(info) {
+                    alert(`📅 Événement : ${info.event.title}\n🕒 Heure : ${info.event.start.toLocaleTimeString()}\n📖 Description : ${info.event.extendedProps.description}`);
+                }
+            });
+
+            calendar.render();
+        }
+
+        function ajouterCours() {
+            let titre = document.getElementById("titre-cours").value;
+            let date = document.getElementById("date-cours").value;
+            let heure = document.getElementById("heure-cours").value;
+            let description = document.getElementById("description-cours").value;
+
+            if (!titre || !date || !heure || !description) {
+                alert("Veuillez remplir tous les champs.");
+                return;
+            }
+
+            let events = JSON.parse(localStorage.getItem("coursEvenements")) || [];
+
+            events.push({
+                title: titre,
+                start: `${date}T${heure}`,
+                description: description
+            });
+
+            localStorage.setItem("coursEvenements", JSON.stringify(events));
+            alert("📅 Cours ajouté avec succès !");
+            location.reload();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="Bulletin-de-Note.html">📜 Bulletin de Notes</a></li>
+                <li><a href="Consultation_Bulletin.html">🔍 Consultation Bulletins</a></li>
+                <li><a href="points_ordres.html">🏆 Points des Ordres</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="comment-rp.html">📖 Guide du RP</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+
+
+</body>
+</html>

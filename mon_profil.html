@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à votre profil.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("pseudo").innerText = pseudo;
+
+            let profil = JSON.parse(localStorage.getItem("profil_" + pseudo)) || {};
+            afficherProfil(profil);
+        });
+
+        function afficherProfil(profil) {
+            document.getElementById("nom").innerText = profil.nom || "Non renseigné";
+            document.getElementById("prenom").innerText = profil.prenom || "Non renseigné";
+            document.getElementById("lieu-naissance").innerText = profil.lieuNaissance || "Non renseigné";
+            document.getElementById("age").innerText = profil.age || "Non renseigné";
+            document.getElementById("sang").innerText = profil.sang || "Non renseigné";
+
+            const avatar = profil.avatar || "images/default-avatar.png";
+            document.getElementById("avatar").src = avatar;
+
+            const baguette = profil.baguette || "images/default-baguette.png";
+            document.getElementById("baguette").src = baguette;
+
+            const patronus = profil.patronus || "images/default-patronus.png";
+            document.getElementById("patronus").src = patronus;
+
+            const creature = profil.creature || "images/default-creature.png";
+            document.getElementById("creature").src = creature;
+
+            const epouvantard = profil.epouvantard || "images/default-epouvantard.png";
+            document.getElementById("epouvantard").src = epouvantard;
+
+            document.getElementById("description-physique").innerText = profil.descriptionPhysique || "Non renseigné";
+            document.getElementById("description-mentale").innerText = profil.descriptionMentale || "Non renseigné";
+            document.getElementById("histoire").innerText = profil.histoire || "Non renseigné";
+
+            // Gestion de l'affichage des matières enseignées (si compte professeur)
+            if (profil.matieres && profil.matieres.length > 0) {
+                document.getElementById("matieres").innerText = profil.matieres.join(", ");
+            } else {
+                document.getElementById("matieres-section").style.display = "none";
+            }
+
+            // Gestion de l'affichage des élèves (Ordre et Année)
+            if (profil.role === "eleve") {
+                document.getElementById("ordre").innerText = profil.ordre || "Non renseigné";
+                document.getElementById("annee").innerText = profil.annee || "Non renseigné";
+            } else {
+                document.getElementById("ordre-section").style.display = "none";
+                document.getElementById("annee-section").style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="index_membre.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="profile-container">
+            <h1>👤 Mon Profil</h1>
+            <img id="avatar" class="profile-avatar" alt="Avatar de l'utilisateur">
+
+            <h2>Informations Générales</h2>
+            <p><strong>Pseudo :</strong> <span id="pseudo"></span></p>
+            <p><strong>Nom :</strong> <span id="nom"></span></p>
+            <p><strong>Prénom :</strong> <span id="prenom"></span></p>
+            <p><strong>Lieu de naissance :</strong> <span id="lieu-naissance"></span></p>
+            <p><strong>Âge :</strong> <span id="age"></span></p>
+            <p><strong>Sang :</strong> <span id="sang"></span></p>
+
+            <hr>
+            <h2 id="matieres-section">📖 Matières enseignées</h2>
+            <p id="matieres">Non renseigné</p>
+
+            <h2 id="ordre-section">🏰 Ordre</h2>
+            <p id="ordre">Non renseigné</p>
+
+            <h2 id="annee-section">🎓 Année d'étude</h2>
+            <p id="annee">Non renseigné</p>
+            <hr>
+
+            <h2>🔮 Informations Magiques</h2>
+            <p><img id="baguette" class="mini-icon" alt="Baguette"> <strong>Baguette :</strong> Non renseigné</p>
+            <p><img id="patronus" class="mini-icon" alt="Patronus"> <strong>Patronus :</strong> Non renseigné</p>
+            <p><img id="creature" class="mini-icon" alt="Créature de compagnie"> <strong>Créature :</strong> Non renseigné</p>
+            <p><img id="epouvantard" class="mini-icon" alt="Épouvantard"> <strong>Épouvantard :</strong> Non renseigné</p>
+
+            <hr>
+
+            <h2>📜 Description</h2>
+            <p><strong>Description Physique :</strong> <span id="description-physique"></span></p>
+            <p><strong>Description Mentale :</strong> <span id="description-mentale"></span></p>
+            <p><strong>Histoire :</strong> <span id="histoire"></span></p>
+
+            <a href="modifier_profil.html" class="btn">Modifier mon Profil</a>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            if (!pseudo) {
+                alert("Vous devez être connecté.");
+                window.location.href = "connexion.html";
+                return;
+            }
+            document.getElementById("pseudo-display").innerText = pseudo;
+
+            // Charger le pseudo Habbo enregistré
+            const habboPseudo = localStorage.getItem(`habbo_${pseudo}`);
+            if (habboPseudo) {
+                document.getElementById("habbo-pseudo").value = habboPseudo;
+                loadHabboProfile();
+            }
+        });
+
+        function loadHabboProfile() {
+            const pseudo = document.getElementById("habbo-pseudo").value.trim();
+            if (!pseudo) {
+                alert("Veuillez entrer un pseudo Habbo.");
+                return;
+            }
+
+            // Enregistrer le pseudo Habbo dans le localStorage
+            const user = localStorage.getItem("pseudo");
+            localStorage.setItem(`habbo_${user}`, pseudo);
+
+            const apiUrl = `https://www.habbowidgets.com/api/public/user/fr/${pseudo}`;
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert("Profil Habbo introuvable.");
+                        return;
+                    }
+
+                    document.getElementById("habbo-name").innerText = data.name;
+                    document.getElementById("habbo-motto").innerText = data.motto || "Aucun motto";
+                    document.getElementById("habbo-badges").innerText = `${data.badgeCount} badges`;
+                    document.getElementById("habbo-avatar").src = `https://www.habbo.com/habbo-imaging/avatarimage?figure=${data.figureString}&size=m`;
+
+                    document.getElementById("habbo-profile").style.display = "block";
+                })
+                .catch(error => console.error("Erreur API :", error));
+        }
+    </script>
+</body>
+</html>
+
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>
+

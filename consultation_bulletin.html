@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultation des Bulletins - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à cette page.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            if (role !== "professeur") {
+                alert("Seuls les professeurs peuvent consulter les bulletins des élèves.");
+                window.location.href = "indexinscrit.html";
+                return;
+            }
+
+            chargerListeEleves();
+        });
+
+        function chargerListeEleves() {
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const selectEleve = document.getElementById("select-eleve");
+
+            let eleves = membres.filter(m => m.role === "eleve");
+            selectEleve.innerHTML = eleves.length 
+                ? eleves.map(m => `<option value="${m.pseudo}">${m.pseudo}</option>`).join("") 
+                : '<option>Aucun élève trouvé</option>';
+        }
+
+        function afficherBulletin() {
+            const pseudoEleve = document.getElementById("select-eleve").value;
+            if (!pseudoEleve) {
+                alert("Veuillez sélectionner un élève.");
+                return;
+            }
+
+            const bulletin = JSON.parse(localStorage.getItem("inventaire_" + pseudoEleve)) || {};
+            const matieres = [
+                "Arts Nobles", "Astronomie", "Charmes", "Civilisations", "Défense Contre les Forces Obscures",
+                "Magizoologie", "Dracologie", "SCM", "Herbologie", "Médicomagie", "Métamorphose",
+                "Mythes et Légendes", "Numérologie", "Potions", "Runes Anciennes",
+                "Sciences Augurales", "Sports Magiques", "Événementiel"
+            ];
+
+            let tableau = document.getElementById("tableau-bulletin");
+            tableau.innerHTML = "";
+
+            matieres.forEach(matiere => {
+                let row = document.createElement("tr");
+                let cellMatiere = document.createElement("td");
+                cellMatiere.innerText = matiere;
+                row.appendChild(cellMatiere);
+
+                let emblemes = bulletin[matiere] || [];
+                for (let i = 0; i < 15; i++) {
+                    let cellEmbleme = document.createElement("td");
+                    if (emblemes[i]) {
+                        let imageSrc = localStorage.getItem(`embleme-${emblemes[i].type}`) || `images/${emblemes[i].type}-default.png`;
+                        cellEmbleme.innerHTML = `<img src="${imageSrc}" class="embleme-icon" title="Ajouté le ${emblemes[i].date} dans ${matiere}">`;
+                    } else {
+                        cellEmbleme.innerText = "-";
+                    }
+                    row.appendChild(cellEmbleme);
+                }
+                tableau.appendChild(row);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="bulletin-de-note.html">📜 Bulletin de Note</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>📜 Consultation des Bulletins</h1>
+            <p class="description">
+                Cette page permet aux professeurs de consulter les bulletins de notes des élèves inscrits. 
+                Sélectionnez un élève dans le menu déroulant pour voir son relevé d'emblèmes obtenus dans les différentes matières.
+            </p>
+
+            <label for="select-eleve">Sélectionner un élève :</label>
+            <select id="select-eleve"></select>
+            <button onclick="afficherBulletin()" class="btn">Afficher le Bulletin</button>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Matière</th>
+                        <th colspan="15">Emblèmes (Max 15 par matière)</th>
+                    </tr>
+                </thead>
+                <tbody id="tableau-bulletin"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

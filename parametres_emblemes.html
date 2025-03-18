@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres des Emblèmes - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+
+            if (!pseudo || role !== "professeur") {
+                alert("Seuls les professeurs peuvent accéder à cette page.");
+                window.location.href = "indexinscrit.html";
+                return;
+            }
+
+            chargerImagesEmblemes();
+        });
+
+        function uploadEmblemeImage(inputId, emblemeType) {
+            const file = document.getElementById(inputId).files[0];
+            const reader = new FileReader();
+
+            if (file) {
+                reader.onload = function (e) {
+                    document.getElementById(`preview-${emblemeType}`).src = e.target.result;
+                    localStorage.setItem(`embleme-${emblemeType}`, e.target.result);
+                    alert(`L'image de l'emblème ${emblemeType.toUpperCase()} a été mise à jour !`);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function chargerImagesEmblemes() {
+            const emblemes = ["or", "argent", "bronze", "fonte"];
+            emblemes.forEach(type => {
+                const storedImage = localStorage.getItem(`embleme-${type}`);
+                if (storedImage) {
+                    document.getElementById(`preview-${type}`).src = storedImage;
+                }
+            });
+        }
+
+        function resetEmblemeImage(emblemeType, defaultPath) {
+            localStorage.removeItem(`embleme-${emblemeType}`);
+            document.getElementById(`preview-${emblemeType}`).src = defaultPath;
+            alert(`L'image de l'emblème ${emblemeType.toUpperCase()} a été réinitialisée !`);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="inventaire.html">📜 Inventaire</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>⚙️ Paramètres des Emblèmes</h1>
+
+            <div class="embleme-config">
+                <h2>Emblème Or</h2>
+                <input type="file" id="or-img" accept="image/*" onchange="uploadEmblemeImage('or-img', 'or')">
+                <img id="preview-or" class="embleme-preview" src="images/or-default.png">
+                <button class="btn btn-warning" onclick="resetEmblemeImage('or', 'images/or-default.png')">Réinitialiser</button>
+
+                <h2>Emblème Argent</h2>
+                <input type="file" id="argent-img" accept="image/*" onchange="uploadEmblemeImage('argent-img', 'argent')">
+                <img id="preview-argent" class="embleme-preview" src="images/argent-default.png">
+                <button class="btn btn-warning" onclick="resetEmblemeImage('argent', 'images/argent-default.png')">Réinitialiser</button>
+
+                <h2>Emblème Bronze</h2>
+                <input type="file" id="bronze-img" accept="image/*" onchange="uploadEmblemeImage('bronze-img', 'bronze')">
+                <img id="preview-bronze" class="embleme-preview" src="images/bronze-default.png">
+                <button class="btn btn-warning" onclick="resetEmblemeImage('bronze', 'images/bronze-default.png')">Réinitialiser</button>
+
+                <h2>Emblème Fonte</h2>
+                <input type="file" id="fonte-img" accept="image/*" onchange="uploadEmblemeImage('fonte-img', 'fonte')">
+                <img id="preview-fonte" class="embleme-preview" src="images/fonte-default.png">
+                <button class="btn btn-warning" onclick="resetEmblemeImage('fonte', 'images/fonte-default.png')">Réinitialiser</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

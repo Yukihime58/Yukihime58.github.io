@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📜 Bulletin de Notes - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- 🏰 Barre latérale -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Logo BeauxBâtons">
+        </div>
+        <ul>
+            <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+            <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+            <li><a href="Consultation_Bulletin.html">🔍 Consultation Bulletins</a></li>
+            <li><a href="banque.html">💰 Banque</a></li>
+            <li><a href="points_ordres.html">🏆 Points des Ordres</a></li>
+            <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+        </ul>
+    </aside>
+
+    <!-- 📜 Contenu Principal -->
+    <div class="container">
+        <div class="form-box">
+            <h1>📜 Bulletin de Notes de <span id="pseudo-display"></span></h1>
+    
+        <!-- Section de gestion pour les professeurs -->
+        <div id="admin-actions" class="form-box">
+            <h2>🔧 Gestion du Bulletin</h2>
+            <p>Les professeurs peuvent ajouter, retirer ou réinitialiser les emblèmes des élèves.</p>
+
+            <label for="select-eleve">Selectionner un élève :</label>
+            <select id="select-eleve"></select>
+
+            <label for="matiere">Matières :</label>
+            <select id="matiere">
+                <option>Arts Nobles</option>
+                <option>Astronomie</option>
+                <option>Charmes</option>
+                <option>Civilisations</option>
+                <option>Défense Contre les Forces Obscures</option>
+                <option>Magizoologie</option>
+                <option>Dracologie</option>
+                <option>SCM</option>
+                <option>Herbologie</option>
+                <option>Médicomagie</option>
+                <option>Métamorphose</option>
+                <option>Mythes et Légendes</option>
+                <option>Numérologie</option>
+                <option>Potions</option>
+                <option>Runes Anciennes</option>
+                <option>Sciences Augurales</option>
+                <option>Sports Magiques</option>
+                <option>Événementiel</option>
+            </select>
+
+            <label for="embleme-type">Emblèmes :</label>
+            <select id="embleme-type">
+                <option value="or">Or</option>
+                <option value="argent">Argent</option>
+                <option value="bronze">Bronze</option>
+                <option value="fonte">Fonte</option>
+            </select>
+
+            <button onclick="modifierBulletin('ajouter')" class="btn">Ajouter</button>
+            <button onclick="modifierBulletin('retirer')" class="btn btn-danger">Retirer</button>
+            <button onclick="modifierBulletin('tout-retirer')" class="btn btn-warning">Tout Retirer</button>
+        </div>
+    </div>
+
+    <!-- 🔄 Script pour charger les bulletins -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+            let membres = JSON.parse(localStorage.getItem("membres")) || [];
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à votre bulletin.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("pseudo-display").innerText = pseudo;
+
+            if (role === "professeur") {
+                document.getElementById("admin-actions").style.display = "block";
+                chargerListeEleves(membres);
+            } else {
+                afficherBulletin(pseudo);
+            }
+        });
+
+        function afficherBulletin(pseudo) {
+            const bulletin = JSON.parse(localStorage.getItem("bulletin_" + pseudo)) || {};
+            const matieres = [
+                "Arts Nobles", "Astronomie", "Charmes", "Civilisations", "Défense Contre les Forces Obscures",
+                "Magizoologie", "Dracologie", "SCM", "Herbologie", "Médicomagie", "Métamorphose",
+                "Mythes et Légendes", "Numérologie", "Potions", "Runes Anciennes",
+                "Sciences Augurales", "Sports Magiques", "Événementiel"
+            ];
+
+            let tableau = document.getElementById("tableau-bulletin");
+            tableau.innerHTML = "";
+
+            matieres.forEach(matiere => {
+                let row = document.createElement("tr");
+                let cellMatiere = document.createElement("td");
+                cellMatiere.innerText = matiere;
+                row.appendChild(cellMatiere);
+
+                let emblemes = bulletin[matiere] || [];
+                for (let i = 0; i < 15; i++) {
+                    let cellEmbleme = document.createElement("td");
+                    if (emblemes[i]) {
+                        let imageSrc = localStorage.getItem(`embleme-${emblemes[i].type}`) || `images/${emblemes[i].type}-default.png`;
+                        cellEmbleme.innerHTML = `<img src="${imageSrc}" class="embleme-icon" title="Ajouté le ${emblemes[i].date} dans ${matiere}">`;
+                    } else {
+                        cellEmbleme.innerText = "-";
+                    }
+                    row.appendChild(cellEmbleme);
+                }
+                tableau.appendChild(row);
+            });
+        }
+
+        function chargerListeEleves(membres) {
+            const selectEleve = document.getElementById("select-eleve");
+            let eleves = membres.filter(m => m.role === "eleve");
+            selectEleve.innerHTML = eleves.length 
+                ? eleves.map(m => `<option value="${m.pseudo}">${m.pseudo}</option>`).join("") 
+                : '<option>Aucun élève trouvé</option>';
+        }
+    </script>
+
+</body>
+</html>

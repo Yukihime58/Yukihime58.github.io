@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+            const avatar = localStorage.getItem("avatar") || "images/default-avatar.png";
+            const ordre = localStorage.getItem("ordre") || "Non assigné";
+            const annee = localStorage.getItem("annee") || "Non spécifiée";
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à cette page.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("pseudo-display").innerText = pseudo;
+            document.getElementById("user-avatar").src = avatar;
+            document.getElementById("user-ordre").innerText = (role === "professeur") ? "Professeur" : ordre;
+            document.getElementById("user-annee").innerText = (role === "professeur") ? "N/A" : annee;
+
+            if (role === "professeur") {
+                document.getElementById("professor-menu").style.display = "block";
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Barre Latérale -->
+        <aside class="sidebar">
+            <div class="mini-profile">
+                <img id="user-avatar" src="images/default-avatar.png" alt="Avatar">
+                <p><strong id="pseudo-display">Utilisateur</strong></p>
+                <p>🎓 <span id="user-ordre">Non assigné</span></p>
+                <p>📚 <span id="user-annee">Non spécifiée</span></p>
+            </div>
+
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="points_ordres.html" 🏆 Points des Ordres</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="inventaire.html">📜 Inventaire</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="contextRP.html">📖 Contexte RP</a></li>
+                <li><a href="comment-rp.html">🎭 Comment RP ?</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+                <li><a href="parametres.html">⚙️ Paramètres</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <div class="form-box">
+            <h1>Bienvenue à BeauxBâtons, <span id="pseudo-display"></span> !</h1>
+            <p>Explorez l'académie, améliorez vos compétences magiques et laissez votre empreinte dans l'histoire des sorciers.</p>
+
+            <div class="button-container">
+                <a href="mon_profil.html" class="btn">👤 Mon Profil</a>
+                <a href="inventaire.html" class="btn">📜 Inventaire</a>
+                <a href="banque.html" class="btn">💰 Banque</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

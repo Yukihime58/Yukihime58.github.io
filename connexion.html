@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔑 Connexion - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- 🏰 Barre latérale -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Logo BeauxBâtons">
+        </div>
+        <ul>
+            <li><a href="index.html">🏠 Accueil</a></li>
+            <li><a href="inscription.html">📝 Inscription</a></li>
+            <li><a href="comment-rp.html">📖 Comment RP</a></li>
+        </ul>
+    </aside>
+
+    <!-- 🔑 Formulaire de Connexion -->
+    <div class="container">
+        <div class="form-box">
+            <h1>🔐 Connexion</h1>
+            <p class="description">Connectez-vous pour accéder à votre compte et participer à l'aventure BeauxBâtons.</p>
+
+            <form id="login-form">
+                <label for="pseudo">👤 Pseudo :</label>
+                <input type="text" id="pseudo" name="pseudo" placeholder="Entrez votre pseudo" required>
+
+                <label for="password">🔑 Mot de passe :</label>
+                <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
+
+                <button type="submit" class="btn">Se Connecter</button>
+            </form>
+
+            <div class="forgot-password">
+                <p>🔹 <a href="mot_de_passe_oublie.html">Mot de passe oublié ?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const pseudo = document.getElementById("pseudo").value;
+            const password = document.getElementById("password").value;
+
+            if (pseudo && password) {
+                localStorage.setItem("pseudo", pseudo);
+                alert("Connexion réussie !");
+                window.location.href = "indexinscrit.html";
+            } else {
+                alert("Veuillez entrer un pseudo et un mot de passe.");
+            }
+        });
+    </script>
+
+</body>
+</html>
