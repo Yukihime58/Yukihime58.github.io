@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer Mon Compte - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à cette page.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("pseudo-display").innerText = pseudo;
+            
+            document.getElementById("delete-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const motDePasse = document.getElementById("password").value.trim();
+                let membres = JSON.parse(localStorage.getItem("membres")) || [];
+                let membreIndex = membres.findIndex(m => m.pseudo === pseudo);
+
+                if (membreIndex === -1) {
+                    alert("Erreur : compte introuvable !");
+                    return;
+                }
+
+                if (membres[membreIndex].password !== motDePasse) {
+                    alert("❌ Mot de passe incorrect !");
+                    return;
+                }
+
+                // Suppression du compte utilisateur
+                membres.splice(membreIndex, 1);
+                localStorage.setItem("membres", JSON.stringify(membres));
+
+                // Suppression du solde bancaire et des transactions
+                let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+                transactions = transactions.filter(t => t.pseudo !== pseudo);
+                localStorage.setItem("transactions", JSON.stringify(transactions));
+
+                localStorage.removeItem("solde_" + pseudo);
+                localStorage.removeItem("personnalisation_" + pseudo);
+                localStorage.removeItem("matieres_" + pseudo);
+                localStorage.removeItem("avatar");
+
+                // Suppression des informations de connexion
+                localStorage.removeItem("pseudo");
+                localStorage.removeItem("role");
+                localStorage.removeItem("ordre");
+                localStorage.removeItem("annee");
+
+                alert("✅ Votre compte a été supprimé avec succès.");
+                window.location.href = "index.html";
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="contextRP.html">📖 Contexte RP</a></li>
+                <li><a href="comment-rp.html">🎭 Comment RP ?</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>⚠ Supprimer Mon Compte</h1>
+            <p>Attention ! Cette action est irréversible. Toutes vos données seront supprimées.</p>
+            
+            <form id="delete-form">
+                <p><strong>Pseudo :</strong> <span id="pseudo-display"></span></p>
+                
+                <label for="password">Entrez votre mot de passe :</label>
+                <input type="password" id="password" required>
+
+                <button type="submit" class="btn btn-danger">Supprimer Mon Compte</button>
+            </form>
+
+            <p><a href="mon_profil.html">Retour au profil</a></p>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

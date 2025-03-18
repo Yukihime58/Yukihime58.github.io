@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const pseudo = localStorage.getItem("pseudo");
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à cette page.");
+                window.location.href = "connexion.html";
+            }
+
+            document.getElementById("solde").innerText = localStorage.getItem("bezants") || 0;
+
+            // Charger l'historique des transactions de l'utilisateur
+            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            const transactionsTable = document.getElementById("transactions-table-body");
+
+            let filteredTransactions = transactions.filter(t => t.destinataire === pseudo);
+            if (filteredTransactions.length === 0) {
+                transactionsTable.innerHTML = "<tr><td colspan='4'>Aucune transaction trouvée.</td></tr>";
+            } else {
+                filteredTransactions.forEach(trans => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${trans.date}</td>
+                        <td>${trans.professeur}</td>
+                        <td>${trans.montant} Bézants</td>
+                        <td>${trans.type}</td>
+                    `;
+                    transactionsTable.appendChild(row);
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="index_membre.html">🏠 Accueil</a></li>
+                <li><a href="mon_compte.html">💰 Mon Compte</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="bank-box">
+            <h1>Mon Compte</h1>
+            <p>💰 Solde actuel : <strong><span id="solde"></span> Bézants</strong></p>
+
+            <h2>Historique des Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Professeur</th>
+                        <th>Montant</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

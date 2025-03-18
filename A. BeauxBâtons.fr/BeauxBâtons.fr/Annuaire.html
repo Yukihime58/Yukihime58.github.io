@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📜 Annuaire des Membres - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- 🏰 Barre latérale -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Logo BeauxBâtons">
+        </div>
+        <ul>
+            <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+            <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+            <li><a href="Bulletin-de-Note.html">📜 Bulletin de Note</a></li>
+            <li><a href="Consultation_Bulletin.html">🔍 Consultation Bulletins</a></li>
+            <li><a href="banque.html">💰 Banque</a></li>
+            <li><a href="points_ordres.html">🏆 Points des Ordres</a></li>
+            <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+        </ul>
+    </aside>
+
+    <!-- 📋 Contenu Principal -->
+    <div class="container">
+        <div class="form-box">
+            <h1>📜 Annuaire des Membres</h1>
+            <p>Découvrez la liste de tous les membres inscrits à BeauxBâtons RPG.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pseudo</th>
+                            <th>Rôle</th>
+                            <th>Ordre</th>
+                            <th>Année d'Étude</th>
+                            <th>Matières Enseignées</th>
+                        </tr>
+                    </thead>
+                    <tbody id="liste-membres"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📜 Script de gestion de l'annuaire -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const tableau = document.getElementById("liste-membres");
+
+            if (membres.length === 0) {
+                tableau.innerHTML = "<tr><td colspan='5'>Aucun membre inscrit pour le moment.</td></tr>";
+                return;
+            }
+
+            membres.forEach(membre => {
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${membre.pseudo}</td>
+                    <td>${membre.role}</td>
+                    <td>${membre.ordre || "-"}</td>
+                    <td>${membre.annee || "-"}</td>
+                    <td>${membre.matieres ? membre.matieres.join(", ") : "-"}</td>
+                `;
+                tableau.appendChild(row);
+            });
+        });
+    </script>
+</body>
+</html>

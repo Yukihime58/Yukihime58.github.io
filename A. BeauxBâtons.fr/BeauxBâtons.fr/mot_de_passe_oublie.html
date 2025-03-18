@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mot de Passe Oublié - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("reset-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const pseudo = document.getElementById("pseudo").value.trim();
+                const newPassword = document.getElementById("new-password").value.trim();
+                const confirmPassword = document.getElementById("confirm-password").value.trim();
+
+                if (newPassword !== confirmPassword) {
+                    alert("❌ Les mots de passe ne correspondent pas !");
+                    return;
+                }
+
+                let membres = JSON.parse(localStorage.getItem("membres")) || [];
+                let membreIndex = membres.findIndex(m => m.pseudo === pseudo);
+
+                if (membreIndex === -1) {
+                    alert("❌ Aucun compte trouvé avec ce pseudo !");
+                    return;
+                }
+
+                // Mise à jour du mot de passe
+                membres[membreIndex].password = newPassword;
+                localStorage.setItem("membres", JSON.stringify(membres));
+
+                // Enregistrement de la date et l'heure de modification
+                const currentDate = new Date();
+                const formattedDate = currentDate.toLocaleDateString() + " à " + currentDate.toLocaleTimeString();
+                
+                let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                notifications.push({
+                    pseudo: pseudo,
+                    message: `Votre mot de passe a été modifié le ${formattedDate}.`
+                });
+                localStorage.setItem("notifications", JSON.stringify(notifications));
+
+                alert(`✅ Mot de passe mis à jour avec succès !\nDate : ${formattedDate}`);
+                window.location.href = "connexion.html";
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="index.html">🏠 Accueil</a></li>
+                <li><a href="inscription.html">📝 Inscription</a></li>
+                <li><a href="connexion.html">🔑 Connexion</a></li>
+                <li><a href="contextRP.html">📖 Contexte RP</a></li>
+                <li><a href="comment-rp.html">🎭 Comment RP ?</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>🔒 Mot de Passe Oublié</h1>
+            <p>Entrez votre pseudo et un nouveau mot de passe pour réinitialiser votre accès.</p>
+            
+            <form id="reset-form">
+                <label for="pseudo">Pseudo :</label>
+                <input type="text" id="pseudo" required>
+
+                <label for="new-password">Nouveau Mot de Passe :</label>
+                <input type="password" id="new-password" required>
+
+                <label for="confirm-password">Confirmez le Mot de Passe :</label>
+                <input type="password" id="confirm-password" required>
+
+                <button type="submit" class="btn">Réinitialiser le Mot de Passe</button>
+            </form>
+
+            <p><a href="connexion.html">Retour à la connexion</a></p>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

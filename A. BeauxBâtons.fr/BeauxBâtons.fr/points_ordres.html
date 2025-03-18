@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Points des Ordres - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à cette page.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            afficherPoints();
+            afficherHistorique();
+
+            // Cacher la section d'administration si l'utilisateur n'est pas professeur
+            if (role !== "professeur") {
+                document.getElementById("admin-actions").style.display = "none";
+            }
+        });
+
+        function afficherPoints() {
+            const pointsOrdres = JSON.parse(localStorage.getItem("pointsOrdres")) || { Aloysia: 0, Lonycera: 0, Urtica: 0 };
+            document.getElementById("points-aloysia").innerText = pointsOrdres.Aloysia + " Points";
+            document.getElementById("points-lonycera").innerText = pointsOrdres.Lonycera + " Points";
+            document.getElementById("points-urtica").innerText = pointsOrdres.Urtica + " Points";
+        }
+
+        function modifierPoints(action) {
+            const ordre = document.getElementById("ordre-select").value;
+            const montant = parseInt(document.getElementById("montant").value);
+            const raison = document.getElementById("raison").value.trim();
+            const pointsOrdres = JSON.parse(localStorage.getItem("pointsOrdres")) || { Aloysia: 0, Lonycera: 0, Urtica: 0 };
+            const historique = JSON.parse(localStorage.getItem("historiquePoints")) || [];
+
+            if (!ordre || isNaN(montant) || montant <= 0 || !raison) {
+                alert("Veuillez choisir un ordre, entrer un montant valide et une raison.");
+                return;
+            }
+
+            if (action === "ajouter") {
+                pointsOrdres[ordre] += montant;
+            } else if (action === "retirer") {
+                pointsOrdres[ordre] = Math.max(0, pointsOrdres[ordre] - montant);
+            }
+
+            localStorage.setItem("pointsOrdres", JSON.stringify(pointsOrdres));
+            historique.push({ professeur: localStorage.getItem("pseudo"), ordre, montant: action === "ajouter" ? `+${montant}` : `-${montant}`, raison, date: new Date().toLocaleString() });
+            localStorage.setItem("historiquePoints", JSON.stringify(historique));
+
+            afficherPoints();
+            afficherHistorique();
+            alert(`✅ Points ${action === "ajouter" ? "ajoutés" : "retirés"} avec succès.`);
+        }
+
+        function reinitialiserPoints() {
+            localStorage.setItem("pointsOrdres", JSON.stringify({ Aloysia: 0, Lonycera: 0, Urtica: 0 }));
+            localStorage.removeItem("historiquePoints");
+            afficherPoints();
+            afficherHistorique();
+            alert("🚨 Tous les points ont été réinitialisés.");
+        }
+
+        function afficherHistorique() {
+            const historique = JSON.parse(localStorage.getItem("historiquePoints")) || [];
+            const tableBody = document.getElementById("historique-transactions");
+            tableBody.innerHTML = "";
+
+            historique.forEach(entry => {
+                let row = document.createElement("tr");
+                row.innerHTML = `<td>${entry.professeur}</td><td>${entry.ordre}</td><td>${entry.montant}</td><td>${entry.raison}</td><td>${entry.date}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="Bulletin-de-Note.html">📜 Bulletin de Notes</a></li>
+                <li><a href="Consultation_Bulletin.html">🔍 Consultation Bulletins</a></li>
+                <li><a href="points_ordres.html">🏆 Points des Ordres</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="comment-rp.html">📖 Guide du RP</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>🏆 Classement des Ordres</h1>
+            <div class="points-container">
+                <p class="points aloysia">Aloysia : <span id="points-aloysia">0 Points</span></p>
+                <p class="points lonycera">Lonycera : <span id="points-lonycera">0 Points</span></p>
+                <p class="points urtica">Urtica : <span id="points-urtica">0 Points</span></p>
+            </div>
+
+            <!-- Partie visible uniquement des Professeurs -->
+            <div id="admin-actions">
+                <h2>⚙️ Gestion des Points (Professeurs)</h2>
+                <label for="ordre-select">Sélectionner un Ordre :</label>
+                <select id="ordre-select">
+                    <option value="Aloysia">Aloysia (🟠)</option>
+                    <option value="Lonycera">Lonycera (🟣)</option>
+                    <option value="Urtica">Urtica (🟢)</option>
+                </select>
+
+                <label for="montant">Montant (+/-) :</label>
+                <input type="number" id="montant" required>
+
+                <label for="raison">Raison :</label>
+                <input type="text" id="raison" placeholder="Exemple : Récompense pour un bon RP" required>
+
+                <button onclick="modifierPoints('ajouter')" class="btn">Ajouter Points</button>
+                <button onclick="modifierPoints('retirer')" class="btn btn-danger">Retirer Points</button>
+                <button onclick="reinitialiserPoints()" class="btn btn-warning">Réinitialiser</button>
+            </div>
+
+            <h2>📜 Historique des Points</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Professeur</th>
+                        <th>Ordre</th>
+                        <th>Montant</th>
+                        <th>Raison</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="historique-transactions"></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

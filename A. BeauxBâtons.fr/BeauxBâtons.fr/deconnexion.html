@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Déconnexion - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Vérifier si un utilisateur est connecté
+            const pseudo = localStorage.getItem("pseudo");
+
+            if (!pseudo) {
+                alert("Vous êtes déjà déconnecté.");
+                window.location.href = "index.html";
+            }
+
+            // Déconnexion au clic du bouton
+            document.getElementById("logout-btn").addEventListener("click", function () {
+                localStorage.removeItem("pseudo");
+                localStorage.removeItem("role");
+                alert("Déconnexion réussie !");
+                window.location.href = "index.html";
+            });
+
+            // Ajout du pseudo à l'affichage
+            document.getElementById("pseudo-display").innerText = pseudo;
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="bulletin-de-note.html">📜 Bulletin de Notes</a></li>
+                <li><a href="deconnexion.html" class="active">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>🚪 Déconnexion</h1>
+            <p class="description">
+                Vous êtes sur le point de vous déconnecter, <strong id="pseudo-display"></strong>.
+                Cela mettra fin à votre session active sur BeauxBâtons RPG. 
+            </p>
+
+            <p class="warning">
+                Une fois déconnecté, vous devrez vous reconnecter pour accéder à votre profil et aux fonctionnalités du site.
+            </p>
+
+            <button id="logout-btn" class="btn btn-danger">Se Déconnecter</button>
+            <a href="indexinscrit.html" class="btn">Annuler</a>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

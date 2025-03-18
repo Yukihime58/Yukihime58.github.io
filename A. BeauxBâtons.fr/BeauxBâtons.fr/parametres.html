@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder aux paramètres.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            document.getElementById("pseudo-display").innerText = pseudo;
+            document.getElementById("role-display").innerText = role === "eleve" ? "Élève" : "Professeur";
+        });
+
+        function supprimerCompte() {
+            if (confirm("⚠ Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible !")) {
+                window.location.href = "supprimer_compte.html";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="annuaire.html">📜 Annuaire</a></li>
+                <li><a href="contextRP.html">📖 Contexte RP</a></li>
+                <li><a href="comment-rp.html">🎭 Comment RP ?</a></li>
+                <li><a href="discord.html">💬 Serveur Discord</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>⚙ Paramètres</h1>
+            <p>Modifiez vos préférences et gérez votre compte.</p>
+            
+            <h2>🔐 Informations du Compte</h2>
+            <p><strong>Pseudo :</strong> <span id="pseudo-display"></span></p>
+            <p><strong>Rôle :</strong> <span id="role-display"></span></p>
+
+            <a href="modifier_profil.html" class="btn">Modifier Mon Profil</a>
+
+            <h2>⚠ Suppression du Compte</h2>
+            <p>Si vous souhaitez quitter BeauxBâtons RPG, vous pouvez supprimer définitivement votre compte.</p>
+            <button onclick="supprimerCompte()" class="btn btn-danger">Supprimer Mon Compte</button>
+        </div>
+    </div>
+
+    <footer class="fixed-footer">
+        <p>&copy; 2025 BeauxBâtons RPG - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

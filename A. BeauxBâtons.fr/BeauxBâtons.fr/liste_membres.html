@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Membres - BeauxBâtons RPG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pseudo = localStorage.getItem("pseudo");
+            const role = localStorage.getItem("role");
+
+            if (!pseudo) {
+                alert("Vous devez être connecté pour accéder à cette page.");
+                window.location.href = "connexion.html";
+                return;
+            }
+
+            afficherMembres();
+        });
+
+        function afficherMembres() {
+            const membres = JSON.parse(localStorage.getItem("membres")) || [];
+            const tableauMembres = document.getElementById("tableau-membres");
+
+            tableauMembres.innerHTML = membres.length 
+                ? membres.map(membre => `
+                    <tr>
+                        <td>${membre.pseudo}</td>
+                        <td>${membre.role === "professeur" ? "Professeur" : "Élève"}</td>
+                        <td>${membre.role === "eleve" ? membre.ordre : "N/A"}</td>
+                        <td>${membre.role === "eleve" ? membre.annee : "N/A"}</td>
+                        <td>
+                            ${membre.role === "eleve" ? `<a href="consultation_bulletin.html?pseudo=${membre.pseudo}" class="btn">📜 Bulletin</a>` : ""}
+                            <a href="profil_public.html?pseudo=${membre.pseudo}" class="btn">👤 Profil</a>
+                        </td>
+                    </tr>
+                `).join("")
+                : "<tr><td colspan='5'>Aucun membre inscrit pour l’instant.</td></tr>";
+        }
+
+        function rechercherMembre() {
+            let input = document.getElementById("recherche").value.toLowerCase();
+            let rows = document.querySelectorAll("#tableau-membres tr");
+
+            rows.forEach(row => {
+                let pseudo = row.cells[0]?.innerText.toLowerCase();
+                if (pseudo && pseudo.includes(input)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="indexinscrit.html">🏠 Accueil</a></li>
+                <li><a href="mon_profil.html">👤 Mon Profil</a></li>
+                <li><a href="bulletin-de-note.html">📜 Bulletin de Notes</a></li>
+                <li><a href="consultation_bulletin.html">🔍 Consultation Bulletins</a></li>
+                <li><a href="banque.html">💰 Banque</a></li>
+                <li><a href="points_ordres.html">🏆 Points des Ordres</a></li>
+                <li><a href="deconnexion.html">🚪 Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <div class="form-box">
+            <h1>📜 Liste des Membres</h1>
+            <p>Découvrez la liste des élèves et professeurs inscrits à BeauxBâtons RPG.</p>
+            <label for="recherche">🔎 Rechercher un membre :</label>
+            <input type="text" id="recherche" placeholder="Entrez un pseudo..." onkeyup="rechercherMembre()">
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Rôle</th>
+                        <th>Ordre (Élève)</th>
+                        <th>Année</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableau-membres"></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
